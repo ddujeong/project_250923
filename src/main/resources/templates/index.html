@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>레벨업 Q&A 게시판</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>레벨업 Q&A 게시판</h1>
+        <div class="user-info">
+            <span th:text="${currentUser.username}">Username</span> | 
+            <span class="user-level" th:text="'레벨 '+${currentUser.level}">레벨 1</span> |
+            <span th:text="'포인트: '+${currentUser.points}">포인트: 0</span>
+        </div>
+    </header>
+
+    <!-- 랜덤 글 추천 -->
+    <section class="random-post">
+        <h2>오늘의 추천 글</h2>
+        <div class="post-card">
+            <h3 th:text="${randomPost.title}">추천 게시글 제목</h3>
+            <p th:text="${randomPost.content}">추천 게시글 내용</p>
+        </div>
+    </section>
+
+    <!-- 게시글 목록 -->
+    <section class="post-list">
+        <h2>게시글 목록</h2>
+        <div th:each="post : ${postList}" class="post-card">
+            <h3 th:text="${post.title}">게시글 제목</h3>
+            <div class="meta">
+                작성자: <span th:text="${post.author.username}">Author</span> | 
+                작성일: <span th:text="${post.createdAt}">2025-01-01</span> | 
+                좋아요: <span th:text="${post.likes}">0</span>
+            </div>
+            <p th:text="${post.content}">게시글 내용</p>
+
+            <!-- 댓글 -->
+            <div class="comments">
+                <div th:each="comment : ${post.commentList}" class="comment-card">
+                    <span class="author" th:text="${comment.author.username}">댓글 작성자</span>:
+                    <span class="content" th:text="${comment.content}">댓글 내용</span> |
+                    좋아요: <span th:text="${comment.likes}">0</span>
+                </div>
+            </div>
+
+            <!-- 투표 -->
+            <div th:if="${post.vote != null}" class="vote-card">
+                <p>투표: <span th:text="${post.vote.question}">질문</span></p>
+                <ul>
+                    <li th:each="option : ${post.vote.options}">
+                        <button th:text="${option.text}">옵션1</button> - 
+                        <span th:text="${option.votes}">0</span>표
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 게시글 작성 버튼 -->
+    <div class="new-post-btn">
+        <a href="/posts/new">새 게시글 작성</a>
+    </div>
+</div>
+</body>
+</html>
