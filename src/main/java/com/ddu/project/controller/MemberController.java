@@ -35,5 +35,9 @@ public class MemberController {
 	public String login() {
 		return "/login";
 	}
+	@GetMapping("/index")
+	public String index() {
+		return "/index";
+	}
 	
 }

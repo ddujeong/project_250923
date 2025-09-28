@@ -2,67 +2,49 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>레벨업 Q&A 게시판</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>여행 추천</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<div class="container">
-    <header>
-        <h1>레벨업 Q&A 게시판</h1>
-        <div class="user-info">
-            <span th:text="${currentUser.username}">Username</span> | 
-            <span class="user-level" th:text="'레벨 '+${currentUser.level}">레벨 1</span> |
-            <span th:text="'포인트: '+${currentUser.points}">포인트: 0</span>
-        </div>
-    </header>
 
-    <!-- 랜덤 글 추천 -->
-    <section class="random-post">
-        <h2>오늘의 추천 글</h2>
-        <div class="post-card">
-            <h3 th:text="${randomPost.title}">추천 게시글 제목</h3>
-            <p th:text="${randomPost.content}">추천 게시글 내용</p>
-        </div>
-    </section>
-
-    <!-- 게시글 목록 -->
-    <section class="post-list">
-        <h2>게시글 목록</h2>
-        <div th:each="post : ${postList}" class="post-card">
-            <h3 th:text="${post.title}">게시글 제목</h3>
-            <div class="meta">
-                작성자: <span th:text="${post.author.username}">Author</span> | 
-                작성일: <span th:text="${post.createdAt}">2025-01-01</span> | 
-                좋아요: <span th:text="${post.likes}">0</span>
-            </div>
-            <p th:text="${post.content}">게시글 내용</p>
-
-            <!-- 댓글 -->
-            <div class="comments">
-                <div th:each="comment : ${post.commentList}" class="comment-card">
-                    <span class="author" th:text="${comment.author.username}">댓글 작성자</span>:
-                    <span class="content" th:text="${comment.content}">댓글 내용</span> |
-                    좋아요: <span th:text="${comment.likes}">0</span>
-                </div>
-            </div>
-
-            <!-- 투표 -->
-            <div th:if="${post.vote != null}" class="vote-card">
-                <p>투표: <span th:text="${post.vote.question}">질문</span></p>
-                <ul>
-                    <li th:each="option : ${post.vote.options}">
-                        <button th:text="${option.text}">옵션1</button> - 
-                        <span th:text="${option.votes}">0</span>표
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- 게시글 작성 버튼 -->
-    <div class="new-post-btn">
-        <a href="/posts/new">새 게시글 작성</a>
+<!-- Hero 섹션 -->
+<div class="hero">
+    <div>
+        <h1>오늘의 여행지 추천</h1>
+        <p>나만의 여행을 계획하고 예약해보세요</p>
+        <button class="button">지금 확인하기</button>
     </div>
 </div>
+
+<!-- 추천 여행지 카드 -->
+<div class="container">
+    <div class="card">
+        <img th:src="@{/images/beach.jpg}" alt="Beach">
+        <div class="card-content">
+            <h3>푸켓 해변</h3>
+            <p>태국의 아름다운 푸켓 해변에서 휴식을 즐겨보세요.</p>
+            <button class="button">예약하기</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="https://source.unsplash.com/300x180/?mountain" alt="Mountain">
+        <div class="card-content">
+            <h3>알프스 산맥</h3>
+            <p>스위스 알프스에서 멋진 등산과 풍경을 감상하세요.</p>
+            <button class="button">예약하기</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="https://source.unsplash.com/300x180/?city" alt="City">
+        <div class="card-content">
+            <h3>파리 여행</h3>
+            <p>낭만적인 파리에서 에펠탑과 미술관을 둘러보세요.</p>
+            <button class="button">예약하기</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
