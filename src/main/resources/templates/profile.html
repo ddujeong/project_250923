@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>프로필 관리</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="profile-container">
+
+    <!-- 탭 메뉴 -->
+    <div class="tab-menu">
+        <button class="tab-link active" onclick="openTab(event, 'info')">내 정보</button>
+        <button class="tab-link" onclick="openTab(event, 'password')">비밀번호 변경</button>
+        <button class="tab-link" onclick="openTab(event, 'reservation')">예약 내역</button>
+        <button class="tab-link" onclick="openTab(event, 'delete')">회원 탈퇴</button>
+    </div>
+
+    <!-- 탭 내용 -->
+    <div id="info" class="tab-content active">
+        <div class="profile-card">
+            <img src="/images/default-profile.png" alt="프로필 이미지" class="profile-img">
+            <input type="file" id="profile-upload" hidden>
+            <button onclick="document.getElementById('profile-upload').click()" class="button">사진 변경</button>
+
+            <form th:action="@{/profile/update}" method="post">
+                <input type="text" name="name" placeholder="이름" required>
+                <input type="text" name="nickname" placeholder="닉네임" required>
+                <input type="email" name="email" placeholder="이메일" readonly>
+                <textarea name="bio" placeholder="자기소개"></textarea>
+                <button type="submit" class="button">저장하기</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="password" class="tab-content">
+        <div class="profile-card">
+            <h3>비밀번호 변경</h3>
+            <form th:action="@{/profile/change-password}" method="post">
+                <input type="password" name="currentPassword" placeholder="현재 비밀번호" required>
+                <input type="password" name="newPassword" placeholder="새 비밀번호" required>
+                <input type="password" name="confirmPassword" placeholder="새 비밀번호 확인" required>
+                <button type="submit" class="button">비밀번호 변경</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="reservation" class="tab-content">
+        <div class="profile-card">
+            <h3>예약 내역</h3>
+            <table class="reservation-table">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>여행지</th>
+                        <th>날짜</th>
+                        <th>상태</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>파리 여행</td>
+                        <td>2025-10-10</td>
+                        <td>확정</td>
+                        <td><button class="button">취소</button></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>푸켓 해변</td>
+                        <td>2025-11-02</td>
+                        <td>대기</td>
+                        <td><button class="button">취소</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="delete" class="tab-content">
+        <div class="profile-card danger-zone">
+            <h3>회원 탈퇴</h3>
+            <p>탈퇴 시 모든 정보가 삭제됩니다. 정말 탈퇴하시겠습니까?</p>
+            <form th:action="@{/profile/delete}" method="post">
+                <button type="submit" class="button danger">회원 탈퇴</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function openTab(evt, tabName) {
+    // 모든 탭 내용 숨김
+    document.querySelectorAll(".tab-content").forEach(tab => tab.style.display = "none");
+    // 모든 탭 버튼 비활성화
+    document.querySelectorAll(".tab-link").forEach(btn => btn.classList.remove("active"));
+    // 선택된 탭만 보이기
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.classList.add("active");
+}
+
+// 초기 탭 설정
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".tab-content").forEach(tab => tab.style.display = "none");
+    document.getElementById("info").style.display = "block";
+});
+</script>
+
+</body>
+</html>

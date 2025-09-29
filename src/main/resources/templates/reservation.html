@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>여행 예약</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!-- 카카오맵 (국내 여행용) -->
+    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_KEY"></script>
+    <!-- 구글맵 (해외 여행용) -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_KEY"></script>
+</head>
+<body>
+
+<!-- Hero 섹션 -->
+<div class="hero">
+    <div>
+        <h1>여행 예약하기</h1>
+        <p>국내와 해외 여행을 모두 확인하고 예약하세요</p>
+    </div>
+</div>
+
+<!-- 국내 여행 카드 -->
+<h2 class="section-title">국내 여행</h2>
+<div class="container">
+    <div th:each="travel : ${travels}" th:if="${travel.isDomestic}" class="card">
+        <img th:src="@{${travel.imageUrl}}" alt="Travel Image">
+        <div class="card-content">
+            <h3 th:text="${travel.name}">여행지 이름</h3>
+            <p th:text="${travel.description}">설명</p>
+            <button class="button" th:onclick="'reserve(' + ${travel.id} + ')'">예약하기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 국내 지도 -->
+<div id="kakao-map" style="width:100%; height:400px; margin-bottom:40px;"></div>
+
+<!-- 해외 여행 카드 -->
+<h2 class="section-title">해외 여행</h2>
+<div class="container">
+    <div th:each="travel : ${travels}" th:if="${!travel.isDomestic}" class="card">
+        <img th:src="@{${travel.imageUrl}}" alt="Travel Image">
+        <div class="card-content">
+            <h3 th:text="${travel.name}">여행지 이름</h3>
+            <p th:text="${travel.description}">설명</p>
+            <button class="button" th:onclick="'reserve(' + ${travel.id} + ')'">예약하기</button>
+        </div>
+    </div>
+</div>
+<!-- 예약 버튼 클릭 시 모달 -->
+<div id="reservation-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modal-title">여행지 이름</h2>
+        <p id="modal-description">설명</p>
+        <form id="reservation-form">
+            <label>이름</label>
+            <input type="text" name="name" required>
+            
+            <label>이메일</label>
+            <input type="email" name="email" required>
+            
+            <label>인원 수</label>
+            <input type="number" name="people" min="1" value="1" required>
+            
+            <button type="submit" class="button">예약하기</button>
+        </form>
+    </div>
+</div>
+
+<!-- 해외 지도 -->
+<div id="google-map" style="width:100%; height:400px; margin-bottom:40px;"></div>
+
+<script>
+    var travels = /*[[${travels}]]*/ [];
+
+    // 국내 지도 (카카오맵)
+    var kakaoMapContainer = document.getElementById('kakao-map');
+    var kakaoMapOptions = { 
+        center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 중심
+        level: 7
+    };
+    var kakaoMap = new kakao.maps.Map(kakaoMapContainer, kakaoMapOptions);
+
+    // 해외 지도 (구글맵)
+    var googleMap = new google.maps.Map(document.getElementById('google-map'), {
+        zoom: 2,
+        center: { lat: 0, lng: 0 }
+    });
+
+    travels.forEach(function(t){
+        if(t.isDomestic){
+            // 국내 → 카카오맵
+            var marker = new kakao.maps.Marker({
+                position: new kakao.maps.LatLng(t.latitude, t.longitude)
+            });
+            marker.setMap(kakaoMap);
+        } else {
+            // 해외 → 구글맵
+            new google.maps.Marker({
+                position: { lat: t.latitude, lng: t.longitude },
+                map: googleMap,
+                title: t.name
+            });
+        }
+    });
+
+    function reserve(travel){
+        // 모달 열기
+        var modal = document.getElementById("reservation-modal");
+        modal.style.display = "block";
+
+        // 모달 정보 채우기
+        document.getElementById("modal-title").textContent = travel.name;
+        document.getElementById("modal-description").textContent = travel.description;
+
+        // form submit 이벤트
+        var form = document.getElementById("reservation-form");
+        form.onsubmit = function(e){
+            e.preventDefault();
+            alert(travel.name + " 예약 완료!\n이름: " + form.name.value + "\n이메일: " + form.email.value + "\n인원: " + form.people.value);
+            modal.style.display = "none";
+            form.reset();
+        }
+    }
+
+    // 모달 닫기
+    var span = document.getElementsByClassName("close")[0];
+    span.onclick = function() {
+        document.getElementById("reservation-modal").style.display = "none";
+    }
+
+    // 모달 외부 클릭 시 닫기
+    window.onclick = function(event) {
+        var modal = document.getElementById("reservation-modal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+</script>
+
+</body>
+</html>

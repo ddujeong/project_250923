@@ -33,11 +33,18 @@ public class MemberController {
 	}
 	@GetMapping("/login")
 	public String login() {
-		return "/login";
+		return "login";
 	}
 	@GetMapping("/index")
 	public String index() {
-		return "/index";
+		return "index";
 	}
-	
+	@GetMapping("/reservation")
+	public String reserve() {
+		return "reservation";
+	}
+	@GetMapping("/profile")
+	public String profile() {
+		return "profile";
+	}
 }
